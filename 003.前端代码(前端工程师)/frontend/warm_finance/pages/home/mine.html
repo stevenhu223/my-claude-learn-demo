@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>我的 - 财务管家</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#944652",
+            "primary-container": "#ff9eaa",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#7a323e",
+            "income-green": "#7DD87D",
+            "error": "#ba1a1a",
+            "surface-white": "#FFFFFF",
+            "background-blush": "#FFF5F7",
+            "text-secondary": "#999999",
+            "on-surface": "#1b1c1c",
+            "on-surface-variant": "#534344",
+            "outline-variant": "#d9c1c2",
+            "secondary-container": "#ffb6c1",
+            "surface-container-low": "#f5f3f3",
+            "surface-container": "#efeded"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #fbf9f8; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .squishy-active:active { transform: scale(0.98); }
+    .slide-in { transform: translateX(-100%); }
+    .slide-in.open { transform: translateX(0); }
+    .overlay { opacity: 0; pointer-events: none; }
+    .overlay.open { opacity: 1; pointer-events: auto; }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+  <!-- Mobile Overlay -->
+  <div id="overlay" class="overlay fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 md:hidden" onclick="closeMenu()"></div>
+
+  <!-- Mobile Side Menu -->
+  <aside id="sideMenu" class="slide-in fixed top-0 left-0 h-full w-72 bg-surface-white z-50 shadow-2xl transition-transform duration-300 md:hidden">
+    <div class="p-6 border-b border-outline-variant/20">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-3xl">🌸</span>
+        <span class="text-xl font-bold text-primary">财务管家</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center">
+          <span class="text-xl text-white">林</span>
+        </div>
+        <div>
+          <p class="font-semibold text-on-surface">林小雨</p>
+          <p class="text-xs text-on-surface-variant">查看个人主页</p>
+        </div>
+      </div>
+    </div>
+    <nav class="p-4 space-y-2">
+      <a href="index.html" class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined">home</span>
+        <span>首页</span>
+      </a>
+      <a href="records.html" class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined">list_alt</span>
+        <span>流水</span>
+      </a>
+      <a href="statistics.html" class="flex items-center gap-4 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined">pie_chart</span>
+        <span>统计</span>
+      </a>
+      <a href="mine.html" class="flex items-center gap-4 px-4 py-3 rounded-xl bg-primary-container text-on-primary-container font-semibold">
+        <span class="material-symbols-outlined">person</span>
+        <span>我的</span>
+      </a>
+    </nav>
+    <div class="absolute bottom-6 left-0 right-0 px-4">
+      <a href="../auth/login.html" class="flex items-center gap-4 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors">
+        <span class="material-symbols-outlined">logout</span>
+        <span>退出登录</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Desktop Header -->
+  <header class="hidden md:block bg-surface-white border-b border-outline-variant/30 sticky top-0 z-30">
+    <div class="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-8">
+        <a href="index.html" class="flex items-center gap-2">
+          <span class="text-2xl">🌸</span>
+          <span class="text-lg font-bold text-primary">财务管家</span>
+        </a>
+        <nav class="flex items-center gap-1">
+          <a class="px-4 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all" href="index.html">首页</a>
+          <a class="px-4 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all" href="records.html">流水</a>
+          <a class="px-4 py-2 rounded-xl text-on-surface-variant hover:bg-surface-container-low transition-all" href="statistics.html">统计</a>
+          <a class="px-4 py-2 rounded-xl bg-primary-container text-on-primary-container font-semibold" href="mine.html">我的</a>
+        </nav>
+      </div>
+      <div class="flex items-center gap-3">
+        <button class="w-9 h-9 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 1024 1024"><path d="M512 64c16.569 0 30 13.431 30 30l0.003 36.008C681.395 137.891 792 253.424 792 394.79v201.955a30 30 0 0 0 14.1 25.44l48.92 30.575C895.443 678.025 920 722.331 920 770c0 49.706-40.294 90-90 90H638.521C624.978 917.335 573.471 960 512 960c-61.471 0-112.978-42.666-126.521-100H194c-49.706 0-90-40.294-90-90 0-47.669 24.557-91.975 64.98-117.24l48.92-30.575a30 30 0 0 0 14.1-25.44V394.79c0-141.366 110.605-256.9 249.998-264.782L482 94c0-16.569 13.431-30 30-30z m63.264 796H448.736c11.235 23.65 35.34 40 63.264 40s52.03-16.35 63.264-40zM526.79 189.58h-29.58C383.876 189.58 292 281.454 292 394.79v201.955a90 90 0 0 1-42.3 76.32l-48.92 30.575A78.255 78.255 0 0 0 164 770c0 16.569 13.431 30 30 30h636c16.569 0 30-13.431 30-30 0-26.981-13.9-52.06-36.78-66.36l-48.92-30.575a90 90 0 0 1-42.3-76.32V394.79c0-113.335-91.876-205.21-205.21-205.21z" fill="currentColor"></path></svg>
+        </button>
+        <div class="h-6 w-px bg-outline-variant/30"></div>
+        <a href="mine.html" class="flex items-center gap-2 pl-1 pr-4 py-1 rounded-full hover:bg-surface-container-low transition-colors">
+          <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
+            <span class="text-sm text-white font-semibold">林</span>
+          </div>
+          <span class="text-sm font-medium text-on-surface">林小雨</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Header -->
+  <header class="md:hidden bg-surface-white border-b border-outline-variant/30 sticky top-0 z-30">
+    <div class="flex items-center justify-between px-4 h-14">
+      <button onclick="openMenu()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+        <span class="material-symbols-outlined text-[22px] text-on-surface-variant">menu</span>
+      </button>
+      <a href="index.html" class="flex items-center gap-2">
+        <span class="text-xl">🌸</span>
+        <span class="text-base font-bold text-primary">财务管家</span>
+      </a>
+      <a href="mine.html" class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
+        <span class="text-sm text-white font-semibold">林</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-[1200px] mx-auto px-4 md:px-6 py-6 md:py-8 pb-24 md:pb-8">
+    <!-- Profile Hero -->
+    <section class="flex flex-col items-center mb-10 md:mb-16">
+      <div class="relative mb-6">
+        <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="handleAvatarChange(event)">
+        <div class="w-24 md:w-32 h-24 md:h-32 rounded-full p-1.5 bg-gradient-to-tr from-primary-container to-secondary-container shadow-xl shadow-primary/10 overflow-hidden cursor-pointer" onclick="document.getElementById('avatarInput').click()">
+          <div id="avatarContainer" class="w-full h-full rounded-full bg-white flex items-center justify-center overflow-hidden">
+            <span id="avatarInitial" class="text-3xl md:text-4xl font-bold text-primary">林</span>
+            <img id="avatarImage" class="hidden w-full h-full object-cover" src="" alt="头像">
+          </div>
+        </div>
+        <button onclick="document.getElementById('avatarInput').click()" class="absolute bottom-1 right-1 bg-primary text-white p-2 rounded-full shadow-lg border-4 border-surface-white hover:scale-110 transition-transform squishy-active">
+          <svg class="w-[18px] h-[18px]" viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+      </div>
+      <h1 class="text-xl md:text-2xl font-bold text-on-surface">林小雨</h1>
+      <p class="mt-2 text-sm text-on-surface-variant flex items-center gap-2">
+        <span class="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
+        理财第 365 天
+      </p>
+      <div class="mt-8 md:mt-10 flex gap-8 md:gap-12">
+        <div class="text-center">
+          <p class="text-xs md:text-sm text-on-surface-variant mb-1">本月记账</p>
+          <p class="text-lg md:text-2xl font-bold text-primary">128<span class="text-sm font-normal ml-1">笔</span></p>
+        </div>
+        <div class="w-px bg-outline-variant"></div>
+        <div class="text-center">
+          <p class="text-xs md:text-sm text-on-surface-variant mb-1">连续打卡</p>
+          <p class="text-lg md:text-2xl font-bold text-income-green">45<span class="text-sm font-normal ml-1">天</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      <!-- Budget -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-4 md:px-6 py-4 border-b border-outline-variant/10">
+          <h2 class="text-sm font-semibold text-on-surface-variant flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary">account_balance</span>
+            预算管理
+          </h2>
+        </div>
+        <div class="p-4 md:p-6 space-y-4">
+          <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-[24px]">payments</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-on-surface">月度总预算</p>
+              <p class="text-xs text-on-surface-variant">¥5,000.00</p>
+            </div>
+            <span class="material-symbols-outlined text-outline">chevron_right</span>
+          </div>
+          <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-secondary-container/20 flex items-center justify-center text-secondary">
+              <span class="material-symbols-outlined text-[24px]">notifications_active</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-on-surface">超支提醒</p>
+              <p class="text-xs text-on-surface-variant">预算 80% 时提醒</p>
+            </div>
+            <div class="w-12 h-6 bg-primary-container rounded-full relative cursor-pointer toggle-btn">
+              <div class="w-4 h-4 bg-white rounded-full shadow-sm absolute top-1 right-1 transition-all"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-4 md:px-6 py-4 border-b border-outline-variant/10">
+          <h2 class="text-sm font-semibold text-on-surface-variant flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-surface-variant">database</span>
+            数据管理
+          </h2>
+        </div>
+        <div class="p-4 md:p-6 space-y-4">
+          <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+              <span class="material-symbols-outlined text-[24px]">file_export</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-on-surface">导出报表</p>
+              <p class="text-xs text-on-surface-variant">Excel / CSV</p>
+            </div>
+            <span class="material-symbols-outlined text-tertiary">download</span>
+          </div>
+          <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-income-green/10 flex items-center justify-center text-income-green">
+              <span class="material-symbols-outlined text-[24px]">cloud_sync</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-on-surface">云端备份</p>
+              <p class="text-xs text-on-surface-variant">10分钟前同步</p>
+            </div>
+            <span class="material-symbols-outlined text-outline">chevron_right</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-4 md:px-6 py-4 border-b border-outline-variant/10">
+          <h2 class="text-sm font-semibold text-on-surface-variant flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-surface-variant">settings</span>
+            系统设置
+          </h2>
+        </div>
+        <div class="p-4 md:p-6 space-y-4">
+          <div onclick="window.location.href='categories.html'" class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined text-[24px]">category</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-on-surface">分类管理</p>
+            </div>
+            <span class="material-symbols-outlined text-outline">chevron_right</span>
+          </div>
+          <div onclick="window.location.href='accounts.html'" class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-on-surface-variant">
+              <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-on-surface">账户管理</p>
+            </div>
+            <span class="material-symbols-outlined text-outline">chevron_right</span>
+          </div>
+          <div onclick="if(confirm('确定退出登录？')) window.location.href='../auth/login.html';" class="flex items-center gap-4 p-4 rounded-xl hover:bg-error-container/10 transition-colors cursor-pointer squishy-active">
+            <div class="w-12 h-12 rounded-xl bg-error-container/20 flex items-center justify-center text-error">
+              <span class="material-symbols-outlined text-[24px]">logout</span>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium text-error">退出登录</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="mt-12 text-center">
+      <p class="text-xs text-on-surface-variant opacity-40">财务管家 V1.0.1</p>
+    </footer>
+  </main>
+
+  <!-- FAB -->
+  <a href="add-record.html" class="fixed right-4 md:right-8 bottom-20 md:bottom-8 w-12 md:w-14 h-12 md:h-14 bg-primary text-white rounded-full shadow-lg flex items-center justify-center squishy-active z-30 hover:scale-105 transition-transform">
+    <span class="material-symbols-outlined text-2xl md:text-3xl">add</span>
+  </a>
+
+  <!-- Mobile Bottom Nav -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-surface-white border-t border-outline-variant/20 px-2 py-2 flex justify-around items-center h-16">
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant" href="index.html">
+      <span class="material-symbols-outlined text-[22px]">home</span>
+      <span class="text-[10px]">首页</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant" href="records.html">
+      <span class="material-symbols-outlined text-[22px]">list_alt</span>
+      <span class="text-[10px]">流水</span>
+    </a>
+    <a href="add-record.html" class="w-12 h-12 bg-primary rounded-full -mt-6 shadow-lg flex items-center justify-center text-white">
+      <span class="material-symbols-outlined text-2xl">add</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-on-surface-variant" href="statistics.html">
+      <span class="material-symbols-outlined text-[22px]">pie_chart</span>
+      <span class="text-[10px]">统计</span>
+    </a>
+    <a class="flex flex-col items-center gap-0.5 text-primary" href="mine.html">
+      <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">person</span>
+      <span class="text-[10px] font-bold">我的</span>
+    </a>
+  </nav>
+
+  <script>
+    const menu = document.getElementById('sideMenu');
+    const overlay = document.getElementById('overlay');
+
+    function openMenu() {
+      menu.classList.add('open');
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      menu.classList.remove('open');
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.squishy-active').forEach(btn => {
+      btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+      btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+      btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+    });
+
+    // 头像上传功能
+    function handleAvatarChange(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const avatarImage = document.getElementById('avatarImage');
+          const avatarInitial = document.getElementById('avatarInitial');
+          avatarImage.src = e.target.result;
+          avatarImage.classList.remove('hidden');
+          avatarInitial.classList.add('hidden');
+          // 保存到 localStorage
+          localStorage.setItem('userAvatar', e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // 页面加载时恢复头像
+    window.addEventListener('DOMContentLoaded', function() {
+      const savedAvatar = localStorage.getItem('userAvatar');
+      if (savedAvatar) {
+        const avatarImage = document.getElementById('avatarImage');
+        const avatarInitial = document.getElementById('avatarInitial');
+        avatarImage.src = savedAvatar;
+        avatarImage.classList.remove('hidden');
+        avatarInitial.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

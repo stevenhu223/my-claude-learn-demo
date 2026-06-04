@@ -1,0 +1,370 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>支出排行榜 - 财务管家</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#8c1037",
+                        "surface-bright": "#fbf9f8",
+                        "error-container": "#ffdad6",
+                        "on-background": "#1b1c1c",
+                        "text-secondary": "#999999",
+                        "on-error": "#ffffff",
+                        "secondary": "#874e58",
+                        "surface-container": "#efeded",
+                        "secondary-fixed": "#ffd9de",
+                        "on-tertiary-fixed": "#400013",
+                        "inverse-primary": "#ffb2ba",
+                        "on-surface-variant": "#534344",
+                        "background": "#fbf9f8",
+                        "on-tertiary-container": "#90143a",
+                        "tertiary-fixed-dim": "#ffb2bd",
+                        "primary-container": "#ff9eaa",
+                        "surface-container-highest": "#e4e2e2",
+                        "error": "#ba1a1a",
+                        "surface-tint": "#944652",
+                        "outline-variant": "#d9c1c2",
+                        "on-secondary-fixed": "#360c17",
+                        "tertiary": "#ad2c4e",
+                        "surface-white": "#FFFFFF",
+                        "on-tertiary": "#ffffff",
+                        "income-green": "#7DD87D",
+                        "primary-fixed-dim": "#ffb2ba",
+                        "on-secondary-fixed-variant": "#6b3741",
+                        "surface-container-high": "#eae8e7",
+                        "surface-dim": "#dbd9d9",
+                        "tertiary-fixed": "#ffd9dd",
+                        "on-primary-fixed": "#3e0312",
+                        "inverse-surface": "#303030",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#7b444e",
+                        "secondary-fixed-dim": "#fcb3be",
+                        "tertiary-container": "#ff9ead",
+                        "surface-container-lowest": "#ffffff",
+                        "primary": "#944652",
+                        "secondary-container": "#ffb6c1",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#f2f0f0",
+                        "primary-fixed": "#ffd9dc",
+                        "surface": "#fbf9f8",
+                        "background-blush": "#FFF5F7",
+                        "on-primary-fixed-variant": "#762f3b",
+                        "surface-container-low": "#f5f3f3",
+                        "on-primary-container": "#7a323e",
+                        "outline": "#867274",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#1b1c1c",
+                        "surface-variant": "#e4e2e2",
+                        "expenditure": "#FF6B8A"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1rem",
+                        "btn": "20px",
+                        "card": "16px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "12px",
+                        "stack-lg": "24px",
+                        "margin-mobile": "20px",
+                        "base": "4px",
+                        "stack-md": "16px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "label-amount": ["JetBrains Mono"],
+                        "display-lg": ["Be Vietnam Pro"],
+                        "headline-md": ["Be Vietnam Pro"],
+                        "body-md": ["Be Vietnam Pro"],
+                        "label-sm": ["Be Vietnam Pro"],
+                        "title-sm": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: "Be Vietnam Pro", sans-serif; background-color: #fbf9f8; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .squishy-button { transition: transform 0.1s ease; }
+        .squishy-button:active { transform: scale(0.95); }
+        .warm-shadow { box-shadow: 0 10px 25px -5px rgba(255, 158, 170, 0.15); }
+        .progress-bar-glow { box-shadow: 0 0 8px rgba(255, 158, 170, 0.3); }
+    </style>
+</head>
+<body class="text-on-background">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Shared Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-outline-variant bg-surface-white px-10 py-3 sticky top-0 z-50">
+<div class="flex items-center gap-4 text-primary">
+<div class="size-8">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_6_319)">
+<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
+</g>
+<defs><clipPath id="clip0_6_319"><rect fill="white" height="48" width="48"></rect></clipPath></defs>
+</svg>
+</div>
+<h2 class="text-on-surface text-lg font-bold leading-tight tracking-[-0.015em]">财务管家</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8 items-center">
+<nav class="flex items-center gap-9">
+<a class="text-on-surface text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">首页</a>
+<a class="text-on-surface text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">记账</a>
+<a class="text-primary text-sm font-bold leading-normal border-b-2 border-primary" href="#">分析</a>
+<a class="text-on-surface text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">设置</a>
+</nav>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-xl h-10 bg-surface-container text-on-surface hover:bg-outline-variant transition-colors px-3">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-xl h-10 bg-surface-container text-on-surface hover:bg-outline-variant transition-colors px-3">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center py-8 px-4 md:px-0">
+<div class="w-full max-w-[720px] flex flex-col gap-8">
+<!-- Page Header & Selector -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div class="flex flex-col gap-1">
+<h1 class="text-3xl font-bold text-on-surface tracking-tight">支出排行榜</h1>
+<p class="text-on-surface-variant text-sm">按类别查看您的支出权重与交易频次</p>
+</div>
+<div class="flex items-center gap-2 bg-surface-white border border-outline-variant rounded-full px-4 py-2 warm-shadow">
+<button class="p-1 hover:text-primary transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<span class="font-bold text-on-surface px-2">2023年10月</span>
+<button class="p-1 hover:text-primary transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<!-- Summary Card -->
+<div class="relative overflow-hidden bg-primary-container rounded-card p-6 warm-shadow group">
+<div class="relative z-10 flex flex-col gap-2">
+<span class="text-on-primary-container text-sm font-medium">本月总支出</span>
+<div class="flex items-baseline gap-2">
+<span class="text-on-primary-container text-4xl font-bold font-display-lg">¥ 12,580.00</span>
+<span class="text-on-primary-container/70 text-xs font-medium bg-white/20 px-2 py-0.5 rounded-full">+12% 较上月</span>
+</div>
+<div class="mt-4 flex gap-4">
+<div class="flex flex-col">
+<span class="text-on-primary-container/60 text-[10px] uppercase tracking-wider font-bold">交易总笔数</span>
+<span class="text-on-primary-container font-bold font-label-amount">84 次</span>
+</div>
+<div class="flex flex-col border-l border-on-primary-container/20 pl-4">
+<span class="text-on-primary-container/60 text-[10px] uppercase tracking-wider font-bold">日均支出额</span>
+<span class="text-on-primary-container font-bold font-label-amount">¥ 405.81</span>
+</div>
+</div>
+</div>
+<!-- Decorative Background Element -->
+<div class="absolute -right-10 -bottom-10 opacity-10 group-hover:scale-110 transition-transform duration-700">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">insights</span>
+</div>
+</div>
+<!-- Ranking List -->
+<div class="bg-surface-white rounded-card warm-shadow overflow-hidden">
+<div class="px-6 py-4 border-b border-surface-container flex items-center justify-between bg-background-blush/50">
+<h3 class="text-title-sm text-on-surface">消费分类排名</h3>
+<button class="flex items-center gap-1 text-primary text-sm font-bold hover:underline transition-all"><span class="material-symbols-outlined text-sm">download</span>导出明细报表</button>
+</div>
+<div class="flex flex-col">
+<!-- Ranking Item 1 -->
+<div class="p-6 border-b border-surface-container hover:bg-background-blush transition-colors group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-2xl bg-primary-container/30 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-on-surface flex items-center gap-2">
+                                            美食餐饮
+                                            <span class="text-[10px] font-bold text-text-secondary bg-surface-container px-2 py-0.5 rounded-full">28 笔</span>
+</h4>
+<span class="font-label-amount text-expenditure text-lg">¥ 4,280.00</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant">占总支出比例 34%</span>
+<span class="text-text-secondary">预算剩余: ¥ 720.00</span>
+</div>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-expenditure progress-bar-glow rounded-full transition-all duration-1000 ease-out" style="width: 34%;"></div>
+</div>
+</div>
+<!-- Ranking Item 2 -->
+<div class="p-6 border-b border-surface-container hover:bg-background-blush transition-colors group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-2xl bg-[#FFE5B4] flex items-center justify-center text-[#E67E22] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">shopping_bag</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-on-surface flex items-center gap-2">
+                                            购物消费
+                                            <span class="text-[10px] font-bold text-text-secondary bg-surface-container px-2 py-0.5 rounded-full">15 笔</span>
+</h4>
+<span class="font-label-amount text-expenditure text-lg">¥ 3,120.00</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant">占总支出比例 25%</span>
+<span class="text-text-secondary">超出预算: ¥ 120.00</span>
+</div>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-expenditure progress-bar-glow rounded-full transition-all duration-1000 ease-out" style="width: 25%;"></div>
+</div>
+</div>
+<!-- Ranking Item 3 -->
+<div class="p-6 border-b border-surface-container hover:bg-background-blush transition-colors group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-2xl bg-[#D4E6FF] flex items-center justify-center text-[#3498DB] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">commute</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-on-surface flex items-center gap-2">
+                                            交通出行
+                                            <span class="text-[10px] font-bold text-text-secondary bg-surface-container px-2 py-0.5 rounded-full">32 笔</span>
+</h4>
+<span class="font-label-amount text-expenditure text-lg">¥ 1,850.00</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant">占总支出比例 15%</span>
+<span class="text-text-secondary">预算充足</span>
+</div>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-expenditure progress-bar-glow rounded-full transition-all duration-1000 ease-out" style="width: 15%;"></div>
+</div>
+</div>
+<!-- Ranking Item 4 -->
+<div class="p-6 border-b border-surface-container hover:bg-background-blush transition-colors group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-2xl bg-[#E8DAFF] flex items-center justify-center text-[#8E44AD] group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-on-surface flex items-center gap-2">
+                                            房租房贷
+                                            <span class="text-[10px] font-bold text-text-secondary bg-surface-container px-2 py-0.5 rounded-full">1 笔</span>
+</h4>
+<span class="font-label-amount text-expenditure text-lg">¥ 1,500.00</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant">占总支出比例 12%</span>
+<span class="text-text-secondary">固定开销</span>
+</div>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-expenditure progress-bar-glow rounded-full transition-all duration-1000 ease-out" style="width: 12%;"></div>
+</div>
+</div>
+<!-- Ranking Item 5 -->
+<div class="p-6 hover:bg-background-blush transition-colors group">
+<div class="flex items-center gap-4 mb-4">
+<div class="size-12 rounded-2xl bg-[#D1F2D1] flex items-center justify-center text-income-green group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between mb-1">
+<h4 class="font-bold text-on-surface flex items-center gap-2">
+                                            医疗健康
+                                            <span class="text-[10px] font-bold text-text-secondary bg-surface-container px-2 py-0.5 rounded-full">8 笔</span>
+</h4>
+<span class="font-label-amount text-expenditure text-lg">¥ 1,830.00</span>
+</div>
+<div class="flex items-center justify-between text-xs">
+<span class="text-on-surface-variant">占总支出比例 14%</span>
+<span class="text-text-secondary">非常规支出</span>
+</div>
+</div>
+</div>
+<div class="h-2 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-expenditure progress-bar-glow rounded-full transition-all duration-1000 ease-out" style="width: 14%;"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Advice Card -->
+<div class="bg-surface-white rounded-card p-6 border-l-4 border-primary warm-shadow flex gap-4 items-start">
+<div class="p-2 bg-primary-container/20 rounded-full text-primary">
+<span class="material-symbols-outlined">lightbulb</span>
+</div>
+<div>
+<h4 class="font-bold text-on-surface mb-1">理财小贴士</h4>
+<p class="text-on-surface-variant text-sm leading-relaxed">本月您的 <span class="font-bold text-primary underline underline-offset-4">美食餐饮</span> 支出偏高，较上月增长了 15%。建议适当减少外食频率，或在 App 中设定该分类的单次消费提醒，以优化预算分配哦~ 🌸</p>
+</div>
+</div>
+<!-- Footer Action -->
+<div class="flex justify-center pb-10">
+<button class="squishy-button bg-primary text-on-primary font-bold px-8 py-3 rounded-btn warm-shadow flex items-center gap-2 hover:bg-primary/90 transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                        记一笔新的支出
+                    </button>
+</div>
+</div>
+</main>
+<!-- Shared Footer (Simplified for Desktop view) -->
+<footer class="w-full bg-surface-white border-t border-outline-variant py-8 mt-12 px-10">
+<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+<div class="flex items-center gap-3">
+<div class="size-6 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.57829 8.57829C5.52816 11.6284 3.451 15.5145 2.60947 19.7452C1.76794 23.9758 2.19984 28.361 3.85056 32.3462C5.50128 36.3314 8.29667 39.7376 11.8832 42.134C15.4698 44.5305 19.6865 45.8096 24 45.8096C28.3135 45.8096 32.5302 44.5305 36.1168 42.134C39.7033 39.7375 42.4987 36.3314 44.1494 32.3462C45.8002 28.361 46.2321 23.9758 45.3905 19.7452C44.549 15.5145 42.4718 11.6284 39.4217 8.57829L24 24L8.57829 8.57829Z" fill="currentColor"></path>
+</svg>
+</div>
+<span class="text-on-surface font-bold">财务管家</span>
+</div>
+<div class="flex gap-8 text-sm text-on-surface-variant">
+<a class="hover:text-primary" href="#">关于我们</a>
+<a class="hover:text-primary" href="#">隐私协议</a>
+<a class="hover:text-primary" href="#">帮助中心</a>
+</div>
+<p class="text-xs text-text-secondary">© 2023 Warm Finance. All rights reserved.</p>
+</div>
+</footer>
+</div>
+</div>
+<script>
+    // Micro-interactions and initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        // Animation for progress bars
+        const bars = document.querySelectorAll('.progress-bar-glow');
+        bars.forEach(bar => {
+            const targetWidth = bar.style.width;
+            bar.style.width = '0%';
+            setTimeout(() => {
+                bar.style.width = targetWidth;
+            }, 100);
+        });
+
+        // Toggle buttons effect
+        const buttons = document.querySelectorAll('.squishy-button');
+        buttons.forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+            btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+            btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+        });
+    });
+</script>
+
+
+</body></html>

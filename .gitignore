@@ -1,0 +1,13 @@
+# Editor
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temp
+TMP.可删除/

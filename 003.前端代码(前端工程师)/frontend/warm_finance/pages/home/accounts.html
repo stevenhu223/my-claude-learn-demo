@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>账户管理 - 财务管家</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght=FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#944652",
+            "primary-container": "#ff9eaa",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#7a323e",
+            "income-green": "#7DD87D",
+            "error": "#ba1a1a",
+            "surface-white": "#FFFFFF",
+            "background-blush": "#FFF5F7",
+            "text-secondary": "#999999",
+            "on-surface": "#1b1c1c",
+            "on-surface-variant": "#534344",
+            "outline-variant": "#d9c1c2",
+            "secondary-container": "#ffb6c1",
+            "surface-container-low": "#f5f3f3",
+            "surface-container": "#efeded"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #fbf9f8; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .squishy-active:active { transform: scale(0.98); }
+  </style>
+</head>
+<body class="font-body-md text-on-surface">
+  <!-- Mobile Header -->
+  <header class="md:hidden bg-surface-white border-b border-outline-variant/30 sticky top-0 z-30">
+    <div class="flex items-center justify-between px-4 h-14">
+      <a href="mine.html" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-low transition-colors">
+        <svg class="w-5 h-5" viewBox="0 0 24 24"><path fill="currentColor" d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </a>
+      <span class="text-base font-bold text-primary">账户管理</span>
+      <div class="w-10"></div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-[600px] mx-auto px-4 py-6 pb-24">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold text-on-surface">账户管理</h1>
+      <button onclick="showAddModal()" class="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity">
+        <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+        添加账户
+      </button>
+    </div>
+
+    <!-- Account List -->
+    <div id="accountList" class="space-y-3">
+      <!-- Accounts will be rendered here -->
+    </div>
+  </main>
+
+  <!-- Add/Edit Modal -->
+  <div id="modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeModal()"></div>
+    <div class="absolute bottom-0 left-0 right-0 bg-surface-white rounded-t-3xl p-6 transform translate-y-full transition-transform" id="modalContent">
+      <div class="w-12 h-1 bg-outline-variant rounded-full mx-auto mb-6"></div>
+      <h3 id="modalTitle" class="text-lg font-bold text-on-surface mb-6">添加账户</h3>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-on-surface-variant mb-2">选择图标</label>
+        <div id="emojiPicker" class="flex flex-wrap gap-2">
+          <!-- Emojis will be rendered here -->
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium text-on-surface-variant mb-2">账户名称</label>
+        <input id="accountName" type="text" class="w-full px-4 py-3 rounded-xl border border-outline-variant/20 bg-white text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="例如：现金、微信、支付宝">
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-medium text-on-surface-variant mb-2">备注（可选）</label>
+        <input id="accountNote" type="text" class="w-full px-4 py-3 rounded-xl border border-outline-variant/20 bg-white text-on-surface placeholder:text-outline/60 focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="例如：日常消费卡">
+      </div>
+
+      <button onclick="saveAccount()" class="w-full py-4 bg-primary text-white rounded-xl font-semibold hover:opacity-90 transition-opacity">
+        保存
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const EMOJIS = ['💵', '💴', '💶', '💷', '💰', '💳', '🏦', '🧾', '💸', '🪙', '👛', '👝', '👜', '🎒', '💼', '📱', '💻', '🖥️', '📦', '🏠', '🚗', '🚌', '✈️', '🎁'];
+
+    let accounts = JSON.parse(localStorage.getItem('accounts')) || [
+      { id: 1, emoji: '💵', name: '现金', note: '日常现金' },
+      { id: 2, emoji: '💳', name: '微信', note: '微信支付' },
+      { id: 3, emoji: '👛', name: '支付宝', note: '支付宝账户' }
+    ];
+    let editingId = null;
+
+    function renderAccounts() {
+      const list = document.getElementById('accountList');
+      list.innerHTML = accounts.map(acc => `
+        <div class="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-4">
+          <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-2xl shrink-0">
+            ${acc.emoji}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-on-surface">${acc.name}</p>
+            <p class="text-xs text-on-surface-variant">${acc.note || '无备注'}</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="editAccount(${acc.id})" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-low transition-colors">
+              <svg class="w-5 h-5 text-on-surface-variant" viewBox="0 0 24 24"><path fill="currentColor" d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+            </button>
+            <button onclick="deleteAccount(${acc.id})" class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-error-container/10 transition-colors">
+              <svg class="w-5 h-5 text-error" viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderEmojiPicker(selectedEmoji) {
+      const picker = document.getElementById('emojiPicker');
+      picker.innerHTML = EMOJIS.map(emoji => `
+        <button type="button" onclick="selectEmoji('${emoji}')" class="w-12 h-12 rounded-xl text-2xl hover:bg-background-blush transition-colors ${selectedEmoji === emoji ? 'bg-primary/10 ring-2 ring-primary' : ''}">
+          ${emoji}
+        </button>
+      `).join('');
+    }
+
+    let selectedEmoji = '💵';
+
+    function selectEmoji(emoji) {
+      selectedEmoji = emoji;
+      renderEmojiPicker(selectedEmoji);
+    }
+
+    function showAddModal() {
+      editingId = null;
+      selectedEmoji = '💵';
+      document.getElementById('modalTitle').textContent = '添加账户';
+      document.getElementById('accountName').value = '';
+      document.getElementById('accountNote').value = '';
+      renderEmojiPicker(selectedEmoji);
+      openModal();
+    }
+
+    function editAccount(id) {
+      editingId = id;
+      const acc = accounts.find(a => a.id === id);
+      selectedEmoji = acc.emoji;
+      document.getElementById('modalTitle').textContent = '编辑账户';
+      document.getElementById('accountName').value = acc.name;
+      document.getElementById('accountNote').value = acc.note || '';
+      renderEmojiPicker(selectedEmoji);
+      openModal();
+    }
+
+    function deleteAccount(id) {
+      if (confirm('确定删除该账户？')) {
+        accounts = accounts.filter(a => a.id !== id);
+        localStorage.setItem('accounts', JSON.stringify(accounts));
+        renderAccounts();
+      }
+    }
+
+    function openModal() {
+      const modal = document.getElementById('modal');
+      const modalContent = document.getElementById('modalContent');
+      modal.classList.remove('hidden');
+      setTimeout(() => modalContent.classList.remove('translate-y-full'), 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('modal');
+      const modalContent = document.getElementById('modalContent');
+      modalContent.classList.add('translate-y-full');
+      setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function saveAccount() {
+      const name = document.getElementById('accountName').value.trim();
+      const note = document.getElementById('accountNote').value.trim();
+
+      if (!name) {
+        alert('请输入账户名称');
+        return;
+      }
+
+      if (editingId) {
+        const acc = accounts.find(a => a.id === editingId);
+        acc.emoji = selectedEmoji;
+        acc.name = name;
+        acc.note = note;
+      } else {
+        accounts.push({
+          id: Date.now(),
+          emoji: selectedEmoji,
+          name: name,
+          note: note
+        });
+      }
+
+      localStorage.setItem('accounts', JSON.stringify(accounts));
+      renderAccounts();
+      closeModal();
+    }
+
+    // Initialize
+    renderAccounts();
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>验证码校验 - 财务管家</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#944652",
+            "primary-container": "#ff9eaa",
+            "on-primary": "#ffffff",
+            "on-primary-container": "#7a323e",
+            "income-green": "#7DD87D",
+            "surface-white": "#FFFFFF",
+            "background-blush": "#FFF5F7",
+            "text-secondary": "#999999",
+            "on-surface": "#1b1c1c",
+            "on-surface-variant": "#534344",
+            "outline-variant": "#d9c1c2",
+            "secondary-container": "#ffb6c1"
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Be Vietnam Pro', sans-serif; background-color: #fbf9f8; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    .otp-input:focus { border-color: #FFB6C1; box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2); outline: none; }
+    .squishy-active:active { transform: scale(0.96); }
+  </style>
+</head>
+<body class="bg-background font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container">
+  <main class="min-h-screen w-full flex flex-row">
+    <!-- Left Side: Brand -->
+    <section class="hidden md:flex md:w-1/2 bg-background-blush relative overflow-hidden items-center justify-center p-stack-lg">
+      <div class="z-10 text-center space-y-stack-md max-w-md">
+        <div class="mb-stack-lg inline-flex items-center justify-center w-20 h-20 rounded-[28px] bg-primary shadow-lg shadow-primary/20">
+          <span class="material-symbols-outlined text-white text-[40px]">account_balance_wallet</span>
+        </div>
+        <h1 class="font-display-lg text-display-lg text-primary">财务管家</h1>
+        <p class="font-body-md text-body-md text-secondary leading-relaxed">您的贴心财务伙伴。每一笔开支都值得被温柔记录。</p>
+      </div>
+      <div class="absolute -top-20 -left-20 w-80 h-80 bg-primary-container/20 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-secondary-container/30 rounded-full blur-3xl"></div>
+    </section>
+
+    <!-- Right Side: Verify Form -->
+    <section class="w-full md:w-1/2 flex items-center justify-center p-margin-mobile bg-surface-white">
+      <div class="w-full max-w-[400px] flex flex-col space-y-stack-lg">
+        <!-- Back Button -->
+        <div class="flex items-center">
+          <a class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors" href="reset-password.html">
+            <span class="material-symbols-outlined text-title-sm">arrow_back</span>
+            <span class="font-label-sm text-label-sm">返回</span>
+          </a>
+        </div>
+
+        <div class="space-y-2">
+          <h2 class="font-headline-md text-headline-md text-on-surface">输入验证码</h2>
+          <p class="font-body-md text-body-md text-on-surface-variant">验证码已发送至 <span class="font-semibold text-on-surface">138****8888</span></p>
+        </div>
+
+        <!-- OTP Inputs -->
+        <div class="flex justify-between items-center gap-4 md:gap-6 py-stack-lg">
+          <input class="otp-input w-12 h-14 md:w-16 md:h-20 text-center text-headline-md font-bold bg-surface-container-low border-2 border-transparent rounded-[20px] transition-all" maxlength="1" type="text">
+          <input class="otp-input w-12 h-14 md:w-16 md:h-20 text-center text-headline-md font-bold bg-surface-container-low border-2 border-transparent rounded-[20px] transition-all" maxlength="1" type="text">
+          <input class="otp-input w-12 h-14 md:w-16 md:h-20 text-center text-headline-md font-bold bg-surface-container-low border-2 border-transparent rounded-[20px] transition-all" maxlength="1" type="text">
+          <input class="otp-input w-12 h-14 md:w-16 md:h-20 text-center text-headline-md font-bold bg-surface-container-low border-2 border-transparent rounded-[20px] transition-all" maxlength="1" type="text">
+          <input class="otp-input w-12 h-14 md:w-16 md:h-20 text-center text-headline-md font-bold bg-surface-container-low border-2 border-transparent rounded-[20px] transition-all" maxlength="1" type="text">
+          <input class="otp-input w-12 h-14 md:w-16 md:h-20 text-center text-headline-md font-bold bg-surface-container-low border-2 border-transparent rounded-[20px] transition-all" maxlength="1" type="text">
+        </div>
+
+        <button class="w-full h-14 bg-primary-container text-on-primary-container font-headline-md rounded-[20px] shadow-lg shadow-primary-container/20 hover:brightness-105 transition-all squishy-active" onclick="window.location.href='password-success.html';">
+          确认并继续
+        </button>
+
+        <div class="flex flex-col items-center space-y-stack-sm pt-stack-sm">
+          <p class="font-label-sm text-label-sm text-on-surface-variant">没收到验证码？ <span class="text-primary font-semibold">重新发送 (59s)</span></p>
+          <a class="text-primary font-label-sm text-label-sm hover:underline transition-all" href="reset-password.html">尝试其他验证方式</a>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

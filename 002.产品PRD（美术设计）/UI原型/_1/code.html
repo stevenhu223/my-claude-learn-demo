@@ -1,0 +1,201 @@
+<!DOCTYPE html><html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>密码修改成功 - 财务管家</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@100..900&amp;family=JetBrains+Mono:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary": "#ffffff",
+                    "background": "#fbf9f8",
+                    "on-tertiary-fixed-variant": "#8c1037",
+                    "inverse-primary": "#ffb2ba",
+                    "on-secondary-fixed": "#360c17",
+                    "surface": "#fbf9f8",
+                    "on-error-container": "#93000a",
+                    "outline-variant": "#d9c1c2",
+                    "primary-fixed": "#ffd9dc",
+                    "primary-container": "#ff9eaa",
+                    "inverse-surface": "#303030",
+                    "surface-white": "#FFFFFF",
+                    "error": "#ba1a1a",
+                    "text-secondary": "#999999",
+                    "on-secondary-fixed-variant": "#6b3741",
+                    "surface-container-highest": "#e4e2e2",
+                    "secondary": "#874e58",
+                    "tertiary-fixed": "#ffd9dd",
+                    "on-primary-container": "#7a323e",
+                    "inverse-on-surface": "#f2f0f0",
+                    "error-container": "#ffdad6",
+                    "income-green": "#7DD87D",
+                    "surface-dim": "#dbd9d9",
+                    "surface-bright": "#fbf9f8",
+                    "tertiary-container": "#ff9ead",
+                    "secondary-fixed": "#ffd9de",
+                    "surface-variant": "#e4e2e2",
+                    "on-primary-fixed": "#3e0312",
+                    "secondary-fixed-dim": "#fcb3be",
+                    "primary": "#944652",
+                    "outline": "#867274",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-container": "#7b444e",
+                    "tertiary": "#ad2c4e",
+                    "on-primary-fixed-variant": "#762f3b",
+                    "on-surface-variant": "#534344",
+                    "tertiary-fixed-dim": "#ffb2bd",
+                    "background-blush": "#FFF5F7",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#90143a",
+                    "surface-container-low": "#f5f3f3",
+                    "on-background": "#1b1c1c",
+                    "on-surface": "#1b1c1c",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#944652",
+                    "surface-container": "#efeded",
+                    "surface-container-high": "#eae8e7",
+                    "on-tertiary-fixed": "#400013",
+                    "primary-fixed-dim": "#ffb2ba",
+                    "on-error": "#ffffff",
+                    "secondary-container": "#ffb6c1"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "gutter": "12px",
+                    "stack-sm": "8px",
+                    "stack-lg": "24px",
+                    "stack-md": "16px",
+                    "margin-mobile": "20px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Be Vietnam Pro"],
+                    "display-lg": ["Be Vietnam Pro"],
+                    "title-sm": ["Be Vietnam Pro"],
+                    "label-amount": ["JetBrains Mono"],
+                    "label-sm": ["Be Vietnam Pro"],
+                    "body-md": ["Be Vietnam Pro"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "title-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-amount": ["20px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .squishy-button {
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: inset 0 -4px 0 rgba(0,0,0,0.1);
+        }
+        .squishy-button:active {
+            transform: scale(0.95);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md overflow-hidden">
+<!-- Main Content: Split Column Layout -->
+<main class="flex-grow flex flex-col md:flex-row w-full max-w-[1440px] mx-auto overflow-hidden">
+<!-- Left Side: Visual/Hero Section -->
+<section class="hidden md:flex bg-primary-container/20 relative items-center justify-center overflow-hidden p-stack-lg md:w-[45%]">
+<!-- Decorative Background Elements -->
+<div class="absolute top-20 left-20 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
+<div class="absolute bottom-20 right-20 w-48 h-48 bg-secondary-container/30 rounded-full blur-3xl"></div>
+<div class="relative z-10 text-center max-w-md">
+<div class="mb-stack-lg inline-flex items-center justify-center p-6 bg-surface-white rounded-[32px] shadow-lg shadow-primary/5">
+<img alt="Financial management scene" class="w-full h-64 object-cover rounded-[24px]" data-alt="A clean, minimalist 3D rendering of a modern home office desk with a pastel pink aesthetic. The scene features a sleek laptop, a small potted succulent, and a coffee mug, illuminated by soft morning sunlight streaming through a window. The overall mood is peaceful and organized, reflecting financial security and calm control. High-key lighting highlights the soft textures and warm blush tones of the workspace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDva3I593uvcmb8JEtHzxPG_952RqJ9LkbheVNvdEdHwK3WyYRb3SaTBq5WnW9ihh3s2BoxG-6IIHJ5Wb8vufbPddMMHKfuzza6BTJNAyoIReOk-4_HEtqb7fUaJFQGXL0ar-v10vhqm0Hhqy2prTkuuDlkuCd0_gaL9-HnZO11BKN47sE38Jo1jSmRrh9uQJRSGvYVjAJqoPGNvAyyo_WbrQ9Syy5aR3JjSkjLTUF9eJ1fjDLSp-O5g8NuT6CxgGvVGFDPdzZQT0o">
+</div>
+<h1 class="font-display-lg text-display-lg text-primary mb-4">财务管家</h1>
+<p class="text-on-surface-variant font-body-md leading-relaxed">
+                    用有温度的方式管理您的每一笔财富。在这里，记账不再是琐事，而是通往理想生活的温柔脚步。
+                </p>
+</div>
+</section>
+<!-- Right Side: Success Content -->
+<section class="w-full flex items-center justify-center p-margin-mobile bg-surface-white relative md:w-[55%]">
+<div class="max-w-md w-full text-center fade-in-up">
+<!-- Success Icon -->
+<div class="mb-stack-lg flex justify-center">
+<div class="w-24 h-24 bg-income-green/10 rounded-full flex items-center justify-center floating-icon w-28 h-28">
+<span class="material-symbols-outlined text-[64px] text-income-green" style="font-variation-settings: 'FILL' 1;">
+                            check_circle
+                        </span>
+</div>
+</div>
+<!-- Text Content -->
+<div class="space-y-4 mb-stack-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface">密码修改成功！</h2>
+<p class="font-body-md text-on-surface-variant px-4">
+                        您的密码已成功更新，系统已为您同步安全状态。快去开始记账吧，让您的财务状况一目了然。
+                    </p>
+</div>
+<!-- Success Detail Card (Micro-interaction element) -->
+<div class="bg-background-blush p-stack-md rounded-[20px] mb-stack-lg border border-primary-container/20 text-left flex items-start gap-4 mx-4">
+<span class="material-symbols-outlined text-primary mt-1">shield</span>
+<div>
+<p class="font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">安全提示</p>
+<p class="text-on-surface font-body-md text-sm">建议您开启双重认证，为您的资产安全增加第二道防线。</p>
+</div>
+</div>
+<!-- Primary Action -->
+<div class="px-4">
+<button class="squishy-button w-full py-5 bg-primary text-on-primary font-headline-md rounded-[24px] hover:bg-primary-container hover:text-on-primary-container transition-all duration-300 flex items-center justify-center gap-2 group shadow-lg shadow-primary/20"><span class="">立即进入系统</span><span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span></button>
+<button class="mt-4 w-full py-3 text-secondary font-title-sm hover:underline transition-all">
+                        返回首页
+                    </button>
+</div>
+<!-- Support Footer -->
+<div class="absolute bottom-10 left-0 right-0 text-center">
+<p class="text-label-sm text-on-surface-variant">遇到问题？联系我们的 <a class="text-primary hover:underline font-bold" href="#">在线客服</a></p>
+</div>
+</div>
+</section>
+</main>
+<!-- Script for subtle interactive background movement -->
+<script>
+        document.addEventListener('mousemove', (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            const leftBg = document.querySelector('.bg-primary-container\\/20');
+            if (leftBg) {
+                leftBg.style.backgroundPosition = `${x * 10}px ${y * 10}px`;
+            }
+        });
+    </script>
+
+
+</body></html>
