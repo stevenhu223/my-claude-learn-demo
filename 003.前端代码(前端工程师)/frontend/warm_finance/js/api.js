@@ -109,29 +109,6 @@ const AuthAPI = {
 // 工具函数
 // =====================
 const Utils = {
-  // 显示提示消息
-  showToast(message, type = 'info') {
-    // 移除已存在的 toast
-    const existing = document.querySelector('.toast-message');
-    if (existing) existing.remove();
-
-    const colors = {
-      success: 'bg-income-green',
-      error: 'bg-red-500',
-      info: 'bg-primary-container'
-    };
-
-    const toast = document.createElement('div');
-    toast.className = `toast-message fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-white ${colors[type] || colors.info} shadow-lg z-9999 transition-all`;
-    toast.textContent = message;
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-  },
-
   // 验证用户名格式
   validateUsername(username) {
     if (!username || username.length < 3 || username.length > 20) {
