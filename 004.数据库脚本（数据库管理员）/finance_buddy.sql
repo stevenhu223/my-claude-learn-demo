@@ -121,17 +121,17 @@ CREATE TABLE records (
 -- ============================================
 DROP TABLE IF EXISTS budgets;
 CREATE TABLE budgets (
-    id              BIGINT PRIMARY KEY AUTO_INCREMENT COMMENT '预算ID',
-    user_id         BIGINT NOT NULL COMMENT '用户ID',
-    year_month      VARCHAR(7) NOT NULL COMMENT '预算月份(格式: YYYY-MM)',
-    budget_amount   DECIMAL(12,2) NOT NULL COMMENT '预算金额',
-    spent_amount    DECIMAL(12,2) DEFAULT 0.00 COMMENT '已花费金额',
-    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    id              BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id         BIGINT NOT NULL,
+    year_month      VARCHAR(7) NOT NULL,
+    budget_amount   DECIMAL(12,2) NOT NULL,
+    spent_amount    DECIMAL(12,2) DEFAULT 0.00,
+    created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_user_month (user_id, year_month),
     INDEX idx_user_id (user_id),
     INDEX idx_year_month (year_month)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='预算表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
 -- 表7: 固定支出表 (fixed_expenses)

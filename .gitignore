@@ -14,3 +14,6 @@ TMP.可删除/
 
 # MCP config (contains tokens)
 .mcp.json
+
+# Node.js
+node_modules/
