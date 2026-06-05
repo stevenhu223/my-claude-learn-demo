@@ -83,10 +83,10 @@
       </a>
     </nav>
     <div class="absolute bottom-6 left-0 right-0 px-4">
-      <a href="../auth/login.html" class="flex items-center gap-4 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors">
+      <button onclick="handleLogout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors">
         <span class="material-symbols-outlined">logout</span>
         <span>退出登录</span>
-      </a>
+      </button>
     </div>
   </aside>
 
@@ -361,6 +361,13 @@
         avatarInitial.classList.add('hidden');
       }
     });
+  </script>
+  <script src="../../js/api.js"></script>
+  <script>
+    function handleLogout() {
+      AuthAPI.logout();
+      window.location.href = '../auth/login.html';
+    }
   </script>
 </body>
 </html>
