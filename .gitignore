@@ -11,3 +11,6 @@ Thumbs.db
 
 # Temp
 TMP.可删除/
+
+# MCP config (contains tokens)
+.mcp.json
