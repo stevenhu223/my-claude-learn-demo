@@ -368,6 +368,60 @@
       AuthAPI.logout();
       window.location.href = '../auth/login.html';
     }
+
+    // 页面加载时获取用户信息
+    window.addEventListener('DOMContentLoaded', async function() {
+      // 检查登录状态
+      if (!AuthAPI.isLoggedIn()) {
+        window.location.href = '../auth/login.html';
+        return;
+      }
+
+      // 获取用户信息
+      const user = AuthAPI.getUser();
+      if (user) {
+        const nickname = user.nickname || user.username || '用户';
+        const firstChar = nickname.charAt(0).toUpperCase();
+
+        // 更新侧边栏用户信息
+        const sidebarName = document.querySelector('#sideMenu .font-semibold.text-on-surface');
+        if (sidebarName) sidebarName.textContent = nickname;
+
+        const sidebarAvatar = document.querySelector('#sideMenu .bg-primary-container span');
+        if (sidebarAvatar) sidebarAvatar.textContent = firstChar;
+
+        // 更新桌面版头部用户信息
+        const headerName = document.querySelector('header .font-medium.text-on-surface');
+        if (headerName) headerName.textContent = nickname;
+
+        const headerAvatar = document.querySelector('header .bg-primary-container .font-semibold');
+        if (headerAvatar) headerAvatar.textContent = firstChar;
+
+        // 更新移动版头部头像
+        const mobileAvatar = document.querySelector('header .rounded-full.bg-primary-container .font-semibold');
+        if (mobileAvatar) mobileAvatar.textContent = firstChar;
+
+        // 更新个人页面用户名
+        const profileName = document.querySelector('main h1');
+        if (profileName) profileName.textContent = nickname;
+
+        // 更新头像首字母
+        const avatarInitial = document.getElementById('avatarInitial');
+        if (avatarInitial) avatarInitial.textContent = firstChar;
+      }
+
+      // 恢复头像
+      const savedAvatar = localStorage.getItem('userAvatar');
+      if (savedAvatar) {
+        const avatarImage = document.getElementById('avatarImage');
+        const avatarInitialEl = document.getElementById('avatarInitial');
+        if (avatarImage && avatarInitialEl) {
+          avatarImage.src = savedAvatar;
+          avatarImage.classList.remove('hidden');
+          avatarInitialEl.classList.add('hidden');
+        }
+      }
+    });
   </script>
 </body>
 </html>
