@@ -19,6 +19,7 @@
             "on-primary-container": "#7a323e",
             "income-green": "#7DD87D",
             "error": "#ba1a1a",
+            "warning": "#FF9800",
             "surface-white": "#FFFFFF",
             "background-blush": "#FFF5F7",
             "text-secondary": "#999999",
@@ -184,13 +185,13 @@
           </h2>
         </div>
         <div class="p-4 md:p-6 space-y-4">
-          <div class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
+          <div onclick="openBudgetModal()" class="flex items-center gap-4 p-4 rounded-xl hover:bg-background-blush transition-colors cursor-pointer squishy-active">
             <div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center text-primary">
               <span class="material-symbols-outlined text-[24px]">payments</span>
             </div>
             <div class="flex-1">
               <p class="font-medium text-on-surface">月度总预算</p>
-              <p class="text-xs text-on-surface-variant">¥5,000.00</p>
+              <p class="text-xs text-on-surface-variant" id="budget-display">¥0.00</p>
             </div>
             <span class="material-symbols-outlined text-outline">chevron_right</span>
           </div>
@@ -202,7 +203,7 @@
               <p class="font-medium text-on-surface">超支提醒</p>
               <p class="text-xs text-on-surface-variant">预算 80% 时提醒</p>
             </div>
-            <div class="w-12 h-6 bg-primary-container rounded-full relative cursor-pointer toggle-btn">
+            <div onclick="toggleOverspendAlert(event)" class="w-12 h-6 bg-primary-container rounded-full relative cursor-pointer toggle-btn" id="overspend-toggle">
               <div class="w-4 h-4 bg-white rounded-full shadow-sm absolute top-1 right-1 transition-all"></div>
             </div>
           </div>
@@ -313,6 +314,42 @@
     </a>
   </nav>
 
+  <!-- Budget Modal -->
+  <div id="budget-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/40" onclick="closeBudgetModal()"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-outline-variant/20 flex items-center justify-between">
+        <h3 class="text-lg font-bold text-on-surface">月度总预算</h3>
+        <button onclick="closeBudgetModal()" class="w-8 h-8 rounded-full hover:bg-surface-container-low flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-surface-variant">close</span>
+        </button>
+      </div>
+      <div class="p-6 space-y-6">
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-on-surface-variant">选择月份</label>
+          <input type="month" id="budget-month" class="w-full px-4 py-3 bg-background border border-outline-variant rounded-xl text-on-surface focus:border-primary-container focus:outline-none">
+        </div>
+        <div class="space-y-2">
+          <label class="block text-sm font-medium text-on-surface-variant">预算金额（元）</label>
+          <input type="number" id="budget-amount" class="w-full px-4 py-3 bg-background border border-outline-variant rounded-xl text-on-surface focus:border-primary-container focus:outline-none" placeholder="请输入预算金额" min="0" step="0.01">
+        </div>
+        <div id="budget-modal-error" class="hidden text-sm text-error"></div>
+      </div>
+      <div class="px-6 py-4 border-t border-outline-variant/20 flex gap-4">
+        <button onclick="closeBudgetModal()" class="flex-1 py-3 rounded-xl bg-surface-container text-on-surface-variant font-medium hover:bg-surface-container-low transition-colors">取消</button>
+        <button onclick="saveBudget()" class="flex-1 py-3 rounded-xl bg-primary text-white font-medium hover:opacity-90 transition-colors">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overspend Alert Toast -->
+  <div id="overspend-toast" class="fixed top-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl text-white shadow-lg z-9999 transition-all opacity-0 pointer-events-none bg-warning">
+    <div class="flex items-center gap-3">
+      <span class="material-symbols-outlined">warning</span>
+      <span id="overspend-message">您已超支！</span>
+    </div>
+  </div>
+
   <script>
     const menu = document.getElementById('sideMenu');
     const overlay = document.getElementById('overlay');
@@ -367,9 +404,168 @@
   </script>
   <script src="../../js/api.js"></script>
   <script>
+    let overspendAlertEnabled = localStorage.getItem('overspendAlertEnabled') === 'true';
+    let currentBudgetYm = '';
+
     async function handleLogout() {
       await AuthAPI.logout();
       window.location.href = '../auth/login.html';
+    }
+
+    // 打开预算弹窗
+    async function openBudgetModal() {
+      const modal = document.getElementById('budget-modal');
+      const monthInput = document.getElementById('budget-month');
+      const amountInput = document.getElementById('budget-amount');
+      const errorDiv = document.getElementById('budget-modal-error');
+
+      errorDiv.classList.add('hidden');
+
+      // 默认选择当月
+      const now = new Date();
+      const defaultYm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      monthInput.value = defaultYm;
+      currentBudgetYm = defaultYm;
+      amountInput.value = '';
+
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+
+      // 加载当月预算
+      try {
+        const data = await BudgetAPI.getBudget(defaultYm);
+        if (data.code === 200 && data.data && data.data.budgetAmount) {
+          amountInput.value = data.data.budgetAmount;
+        }
+      } catch (error) {
+        console.error('加载预算失败:', error);
+      }
+    }
+
+    // 关闭预算弹窗
+    function closeBudgetModal() {
+      const modal = document.getElementById('budget-modal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // 保存预算
+    async function saveBudget() {
+      const monthInput = document.getElementById('budget-month');
+      const amountInput = document.getElementById('budget-amount');
+      const errorDiv = document.getElementById('budget-modal-error');
+
+      const ym = monthInput.value;
+      const budgetAmount = parseFloat(amountInput.value);
+
+      if (!ym) {
+        errorDiv.textContent = '请选择月份';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      if (isNaN(budgetAmount) || budgetAmount < 0) {
+        errorDiv.textContent = '请输入有效的预算金额';
+        errorDiv.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        const data = await BudgetAPI.saveBudget(ym, budgetAmount);
+        if (data.code === 200) {
+          // 更新显示
+          document.getElementById('budget-display').textContent = `¥${budgetAmount.toFixed(2)}`;
+          closeBudgetModal();
+          // 检查是否超支
+          if (overspendAlertEnabled) {
+            checkOverspend(ym);
+          }
+        } else {
+          errorDiv.textContent = data.message || '保存失败';
+          errorDiv.classList.remove('hidden');
+        }
+      } catch (error) {
+        errorDiv.textContent = '网络错误，请重试';
+        errorDiv.classList.remove('hidden');
+      }
+    }
+
+    // 切换超支提醒开关
+    function toggleOverspendAlert(event) {
+      event.stopPropagation();
+      overspendAlertEnabled = !overspendAlertEnabled;
+      localStorage.setItem('overspendAlertEnabled', overspendAlertEnabled);
+      updateToggleState();
+
+      if (overspendAlertEnabled) {
+        // 检查当月是否超支
+        const now = new Date();
+        const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+        checkOverspend(ym);
+      }
+    }
+
+    // 更新开关状态
+    function updateToggleState() {
+      const toggle = document.getElementById('overspend-toggle');
+      const knob = toggle.querySelector('div');
+
+      if (overspendAlertEnabled) {
+        knob.classList.remove('right-1');
+        knob.classList.add('left-1');
+        toggle.classList.remove('bg-primary-container');
+        toggle.classList.add('bg-warning');
+      } else {
+        knob.classList.remove('left-1');
+        knob.classList.add('right-1');
+        toggle.classList.remove('bg-warning');
+        toggle.classList.add('bg-primary-container');
+      }
+    }
+
+    // 检查是否超支
+    async function checkOverspend(ym) {
+      if (!overspendAlertEnabled) return;
+
+      try {
+        // 获取预算
+        const budgetData = await BudgetAPI.getBudget(ym);
+        if (budgetData.code !== 200 || !budgetData.data || !budgetData.data.budgetAmount) {
+          return; // 没有设置预算，不检查
+        }
+
+        const budgetAmount = parseFloat(budgetData.data.budgetAmount);
+
+        // 获取当月支出
+        const [year, month] = ym.split('-').map(Number);
+        const summaryData = await StatisticsAPI.getSummary(year, month);
+        if (summaryData.code !== 200) return;
+
+        const totalExpense = parseFloat(summaryData.data.total_expense || 0);
+        const percentage = (totalExpense / budgetAmount) * 100;
+
+        if (percentage >= 80) {
+          showOverspendToast(ym, totalExpense, budgetAmount, percentage);
+        }
+      } catch (error) {
+        console.error('检查超支失败:', error);
+      }
+    }
+
+    // 显示超支提醒
+    function showOverspendToast(ym, spent, budget, percentage) {
+      const toast = document.getElementById('overspend-toast');
+      const message = document.getElementById('overspend-message');
+
+      const ymDisplay = ym.replace('-', '年') + '月';
+      message.textContent = `${ymDisplay}已花费 ¥${spent.toFixed(2)}，超过预算的 ${percentage.toFixed(0)}%！`;
+
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 5000);
     }
 
     // 确保 AuthAPI 加载后再检查登录状态
@@ -431,6 +627,18 @@
           avatarInitialEl.classList.add('hidden');
         }
       }
+
+      //恢复超支提醒开关状态
+      updateToggleState();
+
+      // 加载当月预算显示
+      const now = new Date();
+      const defaultYm = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+      BudgetAPI.getBudget(defaultYm).then(data => {
+        if (data.code === 200 && data.data && data.data.budgetAmount) {
+          document.getElementById('budget-display').textContent = `¥${parseFloat(data.data.budgetAmount).toFixed(2)}`;
+        }
+      });
     }
 
     // 页面加载时初始化

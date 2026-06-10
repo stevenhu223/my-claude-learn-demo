@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: finance-buddy-api
+
+  # MySQL 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/finance_buddy?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
+    username: root
+    password: 19970714
+
+  # H2 内存数据库（开发测试用）
+  # datasource:
+  #   driver-class-name: org.h2.Driver
+  #   url: jdbc:h2:mem:finance_buddy;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+  #   username: sa
+  #   password:
+
+  # h2:
+  #   console:
+  #     enabled: true
+  #     path: /h2-console
+
+  sql:
+    init:
+      mode: never # MySQL不需要自动初始化，使用已有数据
+
+server:
+  port: 8080
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.financebuddy.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+jwt:
+  secret: finance-buddy-secret-key-2026-very-long-and-secure
+  expiration: 86400000  # 24 hours
+
+logging:
+  level:
+    com.financebuddy: debug

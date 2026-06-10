@@ -431,7 +431,9 @@
           document.getElementById('total-income').textContent = `¥${d.total_income.toFixed(2)}`;
           document.getElementById('total-expense').textContent = `¥${d.total_expense.toFixed(2)}`;
           document.getElementById('balance').textContent = `¥${d.balance.toFixed(2)}`;
-          document.getElementById('transaction-count').textContent = d.transaction_count;
+          // Java后端没有transaction_count，使用expense_count + income_count
+          const transactionCount = (d.expense_count || 0) + (d.income_count || 0);
+          document.getElementById('transaction-count').textContent = transactionCount;
           document.getElementById('daily-income').textContent = `¥${d.daily_avg_income.toFixed(2)}`;
           document.getElementById('daily-expense').textContent = `¥${d.daily_avg_expense.toFixed(2)}`;
 

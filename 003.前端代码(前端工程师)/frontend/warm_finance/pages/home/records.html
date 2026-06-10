@@ -319,8 +319,8 @@
         const endDate = new Date(year, month, 0).toISOString().split('T')[0];
 
         const params = {
-          start_date: startDate,
-          end_date: endDate,
+          startDate: startDate,
+          endDate: endDate,
           limit: PAGE_SIZE,
           offset: currentOffset
         };
@@ -334,8 +334,8 @@
         const data = await RecordsAPI.getRecords(params);
 
         if (data.code === 200) {
-          const newRecords = data.data.records || [];
-          const total = data.data.total;
+          // Java后端直接返回数组
+          const newRecords = data.data || [];
 
           if (reset) {
             allRecords = newRecords;
@@ -343,7 +343,8 @@
             allRecords = [...allRecords, ...newRecords];
           }
 
-          hasMoreRecords = allRecords.length < total;
+          // Java后端没有返回总数，通过数据长度判断是否有更多
+          hasMoreRecords = newRecords.length >= PAGE_SIZE;
           currentOffset += newRecords.length;
 
           updateSummary();
@@ -387,12 +388,13 @@
 
       // 重新获取当月所有数据用于汇总
       RecordsAPI.getRecords({
-        start_date: startDate,
-        end_date: endDate,
+        startDate: startDate,
+        endDate: endDate,
         limit: 1000
       }).then(data => {
         if (data.code === 200) {
-          const records = data.data.records || [];
+          // Java后端直接返回数组
+          const records = data.data || [];
           let exp = 0, inc = 0;
           records.forEach(r => {
             if (r.type === 1) exp += parseFloat(r.amount);

@@ -464,9 +464,9 @@
           renderCategories([]);
         }
 
-        // 处理最近记录
+        // 处理最近记录 - Java后端直接返回数组
         if (recordsData.status === 'fulfilled' && recordsData.value.code === 200) {
-          renderRecentRecords(recordsData.value.data.records || []);
+          renderRecentRecords(recordsData.value.data || []);
         } else {
           renderRecentRecords([]);
         }

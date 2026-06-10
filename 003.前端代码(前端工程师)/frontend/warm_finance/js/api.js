@@ -1,5 +1,5 @@
 // API 配置
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE = 'http://localhost:8080/api';
 
 // 存储 Token 的 Key
 const TOKEN_KEY = 'finance_buddy_token';
@@ -113,10 +113,10 @@ const AuthAPI = {
 const RecordsAPI = {
   // 创建记账记录
   async createRecord(recordData) {
-    const { type, amount, category_id, account_id, payment_method_id, record_date, remark } = recordData;
+    const { type, amount, categoryId, accountId, paymentMethodId, recordDate, remark } = recordData;
     return request('/records', {
       method: 'POST',
-      body: JSON.stringify({ type, amount, category_id, account_id, payment_method_id, record_date, remark })
+      body: JSON.stringify({ type, amount, categoryId, accountId, paymentMethodId, recordDate, remark })
     });
   },
 
@@ -170,6 +170,34 @@ const StatisticsAPI = {
   // 获取今日统计数据
   async getToday() {
     return request('/statistics/today');
+  },
+
+  // 获取月度汇总统计（兼容函数，用于首页）
+  async getMonthSummary(year, month) {
+    const data = await this.getSummary(year, month);
+    // Java后端直接返回统计对象，包装成与前端期望的格式一致
+    return {
+      code: 200,
+      data: data.data
+    };
+  }
+};
+
+// =====================
+// 预算相关 API
+// =====================
+const BudgetAPI = {
+  // 获取指定月份的预算
+  async getBudget(ym) {
+    return request(`/budget?ym=${ym}`);
+  },
+
+  // 保存预算
+  async saveBudget(ym, budgetAmount) {
+    return request('/budget', {
+      method: 'POST',
+      body: JSON.stringify({ ym, budgetAmount })
+    });
   }
 };
 

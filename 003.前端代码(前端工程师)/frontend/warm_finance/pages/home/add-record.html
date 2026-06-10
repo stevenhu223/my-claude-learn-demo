@@ -294,17 +294,17 @@
         '银行卡': 4
       };
 
-      try {
+           try {
         const data = await RecordsAPI.createRecord({
           type: currentType,
           amount: amount,
-          category_id: selectedCategoryId,
-          record_date: recordDate,
-          payment_method_id: paymentMethodMap[paymentMethod] || 1,
+          categoryId: selectedCategoryId,
+          recordDate: recordDate,
+          paymentMethodId: paymentMethodMap[paymentMethod] || 1,
           remark: remark
         });
 
-        if (data.code === 201) {
+        if (data.code === 200 || data.code === 201) {
           alert('保存成功');
           window.location.href = 'index.html';
         } else {
