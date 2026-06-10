@@ -52,8 +52,9 @@ const AuthAPI = {
       method: 'POST',
       body: JSON.stringify({ username, password, nickname })
     });
-    if (data.token) {
-      localStorage.setItem(TOKEN_KEY, data.token);
+    // 注册成功后也将 token 和用户信息存储到 localStorage
+    if (data.data && data.data.token) {
+      localStorage.setItem(TOKEN_KEY, data.data.token);
       localStorage.setItem(USER_KEY, JSON.stringify(data.data.user));
     }
     return data;
@@ -65,8 +66,9 @@ const AuthAPI = {
       method: 'POST',
       body: JSON.stringify({ username, password })
     });
-    if (data.token) {
-      localStorage.setItem(TOKEN_KEY, data.token);
+    // 登录成功后将 token 和用户信息存储到 localStorage
+    if (data.data && data.data.token) {
+      localStorage.setItem(TOKEN_KEY, data.data.token);
       localStorage.setItem(USER_KEY, JSON.stringify(data.data.user));
     }
     return data;
@@ -102,6 +104,72 @@ const AuthAPI = {
   // 获取 Token
   getToken() {
     return localStorage.getItem(TOKEN_KEY);
+  }
+};
+
+// =====================
+// 记账记录相关 API
+// =====================
+const RecordsAPI = {
+  // 创建记账记录
+  async createRecord(recordData) {
+    const { type, amount, category_id, account_id, payment_method_id, record_date, remark } = recordData;
+    return request('/records', {
+      method: 'POST',
+      body: JSON.stringify({ type, amount, category_id, account_id, payment_method_id, record_date, remark })
+    });
+  },
+
+  // 获取记账记录列表
+  async getRecords(params = {}) {
+    const queryString = new URLSearchParams(params).toString();
+    return request(`/records${queryString ? '?' + queryString : ''}`);
+  },
+
+  // 删除记账记录
+  async deleteRecord(id) {
+    return request(`/records/${id}`, { method: 'DELETE' });
+  }
+};
+
+// =====================
+// 分类相关 API
+// =====================
+const CategoriesAPI = {
+  // 获取分类列表
+  async getCategories(type) {
+    const queryString = type ? `?type=${type}` : '';
+    return request(`/categories${queryString}`);
+  }
+};
+
+// =====================
+// 统计相关 API
+// =====================
+const StatisticsAPI = {
+  // 获取月度汇总统计
+  async getSummary(year, month) {
+    return request(`/statistics/summary?year=${year}&month=${month}`);
+  },
+
+  // 获取年度趋势数据
+  async getTrend(year) {
+    return request(`/statistics/trend?year=${year}`);
+  },
+
+  // 获取分类收支分布
+  async getCategoryBreakdown(year, month, type) {
+    return request(`/statistics/category-breakdown?year=${year}&month=${month}&type=${type}`);
+  },
+
+  // 获取预算概览
+  async getBudgetOverview(year, month) {
+    return request(`/statistics/budget-overview?year=${year}&month=${month}`);
+  },
+
+  // 获取今日统计数据
+  async getToday() {
+    return request('/statistics/today');
   }
 };
 

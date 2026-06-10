@@ -116,6 +116,9 @@
           </div>
           <span class="text-sm font-medium text-on-surface">林小雨</span>
         </a>
+        <button onclick="handleLogout()" class="ml-2 px-3 py-1.5 text-sm text-error hover:bg-error-container/10 rounded-lg transition-colors">
+          退出
+        </button>
       </div>
     </div>
   </header>
@@ -265,7 +268,7 @@
             </div>
             <span class="material-symbols-outlined text-outline">chevron_right</span>
           </div>
-          <div onclick="if(confirm('确定退出登录？')) window.location.href='../auth/login.html';" class="flex items-center gap-4 p-4 rounded-xl hover:bg-error-container/10 transition-colors cursor-pointer squishy-active">
+          <div onclick="if(confirm('确定退出登录？')) { handleLogout(); }" class="flex items-center gap-4 p-4 rounded-xl hover:bg-error-container/10 transition-colors cursor-pointer squishy-active">
             <div class="w-12 h-12 rounded-xl bg-error-container/20 flex items-center justify-center text-error">
               <span class="material-symbols-outlined text-[24px]">logout</span>
             </div>
@@ -364,13 +367,20 @@
   </script>
   <script src="../../js/api.js"></script>
   <script>
-    function handleLogout() {
-      AuthAPI.logout();
+    async function handleLogout() {
+      await AuthAPI.logout();
       window.location.href = '../auth/login.html';
     }
 
-    // 页面加载时获取用户信息
-    window.addEventListener('DOMContentLoaded', async function() {
+    // 确保 AuthAPI 加载后再检查登录状态
+    function initPage() {
+      // 检查 AuthAPI 是否已加载
+      if (typeof AuthAPI === 'undefined') {
+        console.error('AuthAPI not loaded, retrying...');
+        setTimeout(initPage, 100);
+        return;
+      }
+
       // 检查登录状态
       if (!AuthAPI.isLoggedIn()) {
         window.location.href = '../auth/login.html';
@@ -421,7 +431,10 @@
           avatarInitialEl.classList.add('hidden');
         }
       }
-    });
+    }
+
+    // 页面加载时初始化
+    window.addEventListener('DOMContentLoaded', initPage);
   </script>
 </body>
 </html>

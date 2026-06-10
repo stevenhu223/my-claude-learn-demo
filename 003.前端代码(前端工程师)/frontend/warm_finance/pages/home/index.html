@@ -26,7 +26,8 @@
             "on-surface-variant": "#534344",
             "outline-variant": "#d9c1c2",
             "secondary-container": "#ffb6c1",
-            "surface-container-low": "#f5f3f3"
+            "surface-container-low": "#f5f3f3",
+            "surface-container-lowest": "#fafafa"
           }
         }
       }
@@ -40,6 +41,9 @@
     .slide-in.open { transform: translateX(0); }
     .overlay { opacity: 0; pointer-events: none; }
     .overlay.open { opacity: 1; pointer-events: auto; }
+    .category-card { min-height: 80px; }
+    .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
   </style>
 </head>
 <body class="font-body-md text-on-surface">
@@ -55,10 +59,10 @@
       </div>
       <div class="flex items-center gap-3">
         <div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center">
-          <span class="text-xl text-white">林</span>
+          <span id="sidebarAvatar" class="text-xl text-white">林</span>
         </div>
         <div>
-          <p class="font-semibold text-on-surface">林小雨</p>
+          <p id="sidebarName" class="font-semibold text-on-surface">林小雨</p>
           <p class="text-xs text-on-surface-variant">查看个人主页</p>
         </div>
       </div>
@@ -82,10 +86,10 @@
       </a>
     </nav>
     <div class="absolute bottom-6 left-0 right-0 px-4">
-      <a href="../auth/login.html" class="flex items-center gap-4 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors">
+      <button onclick="handleLogout()" class="w-full flex items-center gap-4 px-4 py-3 rounded-xl text-error hover:bg-error-container/10 transition-colors">
         <span class="material-symbols-outlined">logout</span>
         <span>退出登录</span>
-      </a>
+      </button>
     </div>
   </aside>
 
@@ -111,10 +115,13 @@
         <div class="h-6 w-px bg-outline-variant/30"></div>
         <a href="mine.html" class="flex items-center gap-2 pl-1 pr-4 py-1 rounded-full hover:bg-surface-container-low transition-colors">
           <div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
-            <span class="text-sm text-white font-semibold">林</span>
+            <span id="headerAvatar" class="text-sm text-white font-semibold">林</span>
           </div>
-          <span class="text-sm font-medium text-on-surface">林小雨</span>
+          <span id="headerName" class="text-sm font-medium text-on-surface">林小雨</span>
         </a>
+        <button onclick="handleLogout()" class="ml-2 px-3 py-1.5 text-sm text-error hover:bg-error-container/10 rounded-lg transition-colors">
+          退出
+        </button>
       </div>
     </div>
   </header>
@@ -130,7 +137,7 @@
         <span class="text-base font-bold text-primary">财务管家</span>
       </a>
       <a href="mine.html" class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center">
-        <span class="text-sm text-white font-semibold">林</span>
+        <span id="mobileAvatar" class="text-sm text-white font-semibold">林</span>
       </a>
     </div>
   </header>
@@ -138,62 +145,70 @@
   <!-- Main Content -->
   <main class="max-w-[1200px] mx-auto px-4 md:px-6 py-6 md:py-8 pb-24 md:pb-8">
     <!-- Hero Stats Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-10">
-      <!-- Main Overview Card -->
-      <section class="lg:col-span-2 bg-white p-6 md:p-8 rounded-2xl md:rounded-[32px] shadow-sm relative overflow-hidden">
-        <div class="absolute -right-12 -top-12 w-40 md:w-64 h-40 md:h-64 bg-primary-container/10 rounded-full blur-2xl"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-5 mb-6 md:mb-10">
+      <!-- 本月支出 -->
+      <section class="bg-white p-5 md:p-6 rounded-2xl md:rounded-[24px] shadow-sm flex flex-col justify-between min-h-[130px] md:min-h-[160px] relative overflow-hidden group hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-20 h-20 bg-error/5 rounded-full group-hover:scale-110 transition-transform"></div>
         <div class="relative z-10">
-          <div class="flex justify-between items-start mb-4 md:mb-8">
-            <div>
-              <p class="text-xs md:text-sm text-on-surface-variant mb-1 md:mb-2">本月支出总览</p>
-              <div class="flex items-baseline gap-2">
-                <span class="text-2xl md:text-[48px] font-bold text-primary">¥ 3,280.00</span>
-                <span class="text-xs md:text-sm text-error flex items-center gap-0.5">
-                  <span class="material-symbols-outlined text-xs md:text-sm">trending_up</span>12.5%
-                </span>
-              </div>
+          <div class="flex items-center gap-2 mb-3 md:mb-4">
+            <div class="w-8 h-8 rounded-lg bg-error/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-base text-error">keyboard_arrow_down</span>
             </div>
-            <div class="text-right hidden sm:block">
-              <p class="text-xs text-on-surface-variant mb-1">剩余预算</p>
-              <p class="text-lg md:text-[28px] font-bold text-income-green">¥ 1,720.00</p>
-            </div>
+            <span class="text-xs md:text-sm text-on-surface-variant font-medium">本月支出</span>
           </div>
-          <div class="space-y-3 md:space-y-4">
-            <div class="flex justify-between items-end">
-              <div class="space-y-1">
-                <p class="text-sm font-medium text-on-surface">预算执行进度</p>
-                <p class="text-xs text-on-surface-variant hidden sm:block">总预算: ¥ 5,000.00</p>
-              </div>
-              <p class="text-base md:text-lg font-bold text-primary">65.6%</p>
-            </div>
-            <div class="h-2 md:h-4 bg-surface-container-low rounded-full overflow-hidden">
-              <div class="h-full bg-primary-container w-[65.6%] rounded-full transition-all duration-1000"></div>
-            </div>
-          </div>
+          <p id="monthExpense" class="text-2xl md:text-3xl font-bold text-error tracking-tight">--</p>
+          <p class="text-[11px] md:text-xs text-on-surface-variant mt-1"><span id="expenseCount">--</span> 笔支出</p>
         </div>
       </section>
 
-      <!-- Quick Action Card -->
-      <section class="bg-primary text-white p-6 md:p-8 rounded-2xl md:rounded-[32px] shadow-lg flex flex-col justify-between">
-        <div>
-          <p class="text-sm mb-1">今日结余</p>
-          <p class="text-[28px] md:text-[36px] font-bold mb-4 md:mb-6">¥ 124.50</p>
-          <div class="space-y-2 text-sm">
-            <div class="flex justify-between">
-              <span class="text-white/70">今日支出</span>
-              <span>- ¥ 45.00</span>
+      <!-- 本月收入 -->
+      <section class="bg-white p-5 md:p-6 rounded-2xl md:rounded-[24px] shadow-sm flex flex-col justify-between min-h-[130px] md:min-h-[160px] relative overflow-hidden group hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-20 h-20 bg-income-green/8 rounded-full group-hover:scale-110 transition-transform"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-3 md:mb-4">
+            <div class="w-8 h-8 rounded-lg bg-income-green/12 flex items-center justify-center">
+              <span class="material-symbols-outlined text-base text-income-green">keyboard_arrow_up</span>
             </div>
-            <div class="h-px bg-white/20"></div>
-            <div class="flex justify-between">
-              <span class="text-white/70">日均预算</span>
-              <span>¥ 161.20</span>
-            </div>
+            <span class="text-xs md:text-sm text-on-surface-variant font-medium">本月收入</span>
           </div>
+          <p id="monthIncome" class="text-2xl md:text-3xl font-bold text-income-green tracking-tight">--</p>
+          <p class="text-[11px] md:text-xs text-on-surface-variant mt-1"><span id="incomeCount">--</span> 笔收入</p>
         </div>
-        <a href="add-record.html" class="mt-4 md:mt-6 w-full bg-white text-primary font-bold py-3 md:py-4 rounded-xl flex items-center justify-center gap-2 hover:bg-secondary-container transition-colors squishy-active">
-          <span class="material-symbols-outlined">add_circle</span>
-          记一笔
-        </a>
+      </section>
+
+      <!-- 本月结余 -->
+      <section class="bg-white p-5 md:p-6 rounded-2xl md:rounded-[24px] shadow-sm flex flex-col justify-between min-h-[130px] md:min-h-[160px] relative overflow-hidden group hover:shadow-md transition-shadow">
+        <div class="absolute -right-4 -top-4 w-20 h-20 bg-primary/8 rounded-full group-hover:scale-110 transition-transform"></div>
+        <div class="relative z-10">
+          <div class="flex items-center gap-2 mb-3 md:mb-4">
+            <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-base text-primary">account_balance_wallet</span>
+            </div>
+            <span class="text-xs md:text-sm text-on-surface-variant font-medium">本月结余</span>
+          </div>
+          <p id="monthBalance" class="text-2xl md:text-3xl font-bold text-primary tracking-tight">--</p>
+          <p class="text-[11px] md:text-xs text-on-surface-variant mt-1">收入 - 支出</p>
+        </div>
+      </section>
+
+      <!-- 今日速览 -->
+      <section class="bg-primary text-white p-5 md:p-6 rounded-2xl md:rounded-[24px] shadow-md flex flex-col justify-between min-h-[130px] md:min-h-[160px] relative overflow-hidden">
+        <div>
+          <div class="flex items-center gap-2 mb-3 md:mb-4">
+            <div class="w-8 h-8 rounded-lg bg-white/15 flex items-center justify-center">
+              <span class="material-symbols-outlined text-base text-white">today</span>
+            </div>
+            <span class="text-xs md:text-sm text-white/80 font-medium">今日速览</span>
+          </div>
+          <p id="todayBalance" class="text-2xl md:text-3xl font-bold tracking-tight">--</p>
+        </div>
+        <div class="flex items-center justify-between text-[11px] md:text-xs text-white/70">
+          <span>支出 <span id="todayExpense" class="text-white font-medium">--</span></span>
+          <a href="add-record.html" class="flex items-center gap-1 bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-full transition-colors">
+            <span class="material-symbols-outlined text-sm">add</span>
+            <span class="hidden sm:inline">记一笔</span>
+          </a>
+        </div>
       </section>
     </div>
 
@@ -208,37 +223,38 @@
           查看详情 <span class="material-symbols-outlined text-sm">chevron_right</span>
         </a>
       </div>
-      <div class="grid grid-cols-4 md:grid-cols-6 gap-2 md:gap-4">
-        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+      <div id="categoriesContainer" class="grid grid-cols-4 md:grid-cols-6 gap-2 md:gap-4">
+        <!-- 动态加载分类数据 -->
+        <div class="bg-white p-3 md:p-6 rounded-xl border border-transparent flex flex-col items-center gap-1 md:gap-3 skeleton category-card">
           <span class="text-xl md:text-3xl">🍜</span>
           <span class="text-xs font-medium text-on-surface">餐饮</span>
-          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥1,240</span>
-        </a>
-        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥--</span>
+        </div>
+        <div class="bg-white p-3 md:p-6 rounded-xl border border-transparent flex flex-col items-center gap-1 md:gap-3 skeleton category-card">
           <span class="text-xl md:text-3xl">🚌</span>
           <span class="text-xs font-medium text-on-surface">交通</span>
-          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥450</span>
-        </a>
-        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥--</span>
+        </div>
+        <div class="bg-white p-3 md:p-6 rounded-xl border border-transparent flex flex-col items-center gap-1 md:gap-3 skeleton category-card">
           <span class="text-xl md:text-3xl">🛒</span>
           <span class="text-xs font-medium text-on-surface">购物</span>
-          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥890</span>
-        </a>
-        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥--</span>
+        </div>
+        <div class="bg-white p-3 md:p-6 rounded-xl border border-transparent flex flex-col items-center gap-1 md:gap-3 skeleton category-card">
           <span class="text-xl md:text-3xl">🎬</span>
           <span class="text-xs font-medium text-on-surface">娱乐</span>
-          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥320</span>
-        </a>
-        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥--</span>
+        </div>
+        <div class="bg-white p-3 md:p-6 rounded-xl border border-transparent flex flex-col items-center gap-1 md:gap-3 skeleton category-card">
           <span class="text-xl md:text-3xl">💊</span>
           <span class="text-xs font-medium text-on-surface">医疗</span>
-          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥120</span>
-        </a>
-        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥--</span>
+        </div>
+        <div class="bg-white p-3 md:p-6 rounded-xl border border-transparent flex flex-col items-center gap-1 md:gap-3 skeleton category-card">
           <span class="text-xl md:text-3xl">📚</span>
           <span class="text-xs font-medium text-on-surface">教育</span>
-          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥260</span>
-        </a>
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">¥--</span>
+        </div>
       </div>
     </section>
 
@@ -251,31 +267,29 @@
         </div>
         <a href="records.html" class="px-3 md:px-4 py-2 bg-primary text-white text-xs md:text-sm rounded-lg hover:opacity-90 transition-opacity">查看全部</a>
       </div>
-      <div class="divide-y divide-outline-variant/10">
-        <a href="records.html" class="flex items-center gap-3 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors">
-          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-lg md:text-xl">🍜</div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-sm md:text-base text-on-surface truncate">嘉和一品 - 午餐套餐</p>
-            <p class="text-xs text-on-surface-variant">05-28 12:30 · 餐饮</p>
+      <div id="recordsContainer" class="divide-y divide-outline-variant/10">
+        <!-- 动态加载最近记录 -->
+        <div class="flex items-center gap-3 md:gap-4 p-4">
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface-container-low animate-pulse"></div>
+          <div class="flex-1 min-w-0 space-y-2">
+            <div class="h-4 bg-surface-container-low rounded w-3/4 animate-pulse"></div>
+            <div class="h-3 bg-surface-container-low rounded w-1/2 animate-pulse"></div>
           </div>
-          <span class="font-bold text-error text-sm md:text-base">-¥35</span>
-        </a>
-        <a href="records.html" class="flex items-center gap-3 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors">
-          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-lg md:text-xl">🧋</div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-sm md:text-base text-on-surface truncate">喜茶 - 多肉葡萄</p>
-            <p class="text-xs text-on-surface-variant">05-27 15:45 · 餐饮</p>
+        </div>
+        <div class="flex items-center gap-3 md:gap-4 p-4">
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface-container-low animate-pulse"></div>
+          <div class="flex-1 min-w-0 space-y-2">
+            <div class="h-4 bg-surface-container-low rounded w-3/4 animate-pulse"></div>
+            <div class="h-3 bg-surface-container-low rounded w-1/2 animate-pulse"></div>
           </div>
-          <span class="font-bold text-error text-sm md:text-base">-¥18</span>
-        </a>
-        <a href="records.html" class="flex items-center gap-3 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors">
-          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-lg md:text-xl">🚇</div>
-          <div class="flex-1 min-w-0">
-            <p class="font-medium text-sm md:text-base text-on-surface truncate">北京地铁10号线</p>
-            <p class="text-xs text-on-surface-variant">05-27 08:20 · 交通</p>
+        </div>
+        <div class="flex items-center gap-3 md:gap-4 p-4">
+          <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-surface-container-low animate-pulse"></div>
+          <div class="flex-1 min-w-0 space-y-2">
+            <div class="h-4 bg-surface-container-low rounded w-3/4 animate-pulse"></div>
+            <div class="h-3 bg-surface-container-low rounded w-1/2 animate-pulse"></div>
           </div>
-          <span class="font-bold text-error text-sm md:text-base">-¥5</span>
-        </a>
+        </div>
       </div>
     </section>
   </main>
@@ -308,7 +322,53 @@
     </a>
   </nav>
 
+  <script src="../../js/api.js"></script>
   <script>
+    // ========== 工具函数 ==========
+    function formatMoney(amount) {
+      const val = parseFloat(amount);
+      if (isNaN(val) || !isFinite(val)) return '¥ 0.00';
+      return '¥ ' + val.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatMoneyShort(amount) {
+      const val = parseFloat(amount);
+      if (isNaN(val) || !isFinite(val)) return '¥--';
+      if (Math.abs(val) >= 10000) {
+        return '¥' + (val / 10000).toFixed(1) + '万';
+      }
+      return '¥' + val.toLocaleString('zh-CN', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+
+    function getTodayDateStr() {
+      const today = new Date();
+      return today.toISOString().split('T')[0];
+    }
+
+    function getLast7DaysLocal() {
+      const dates = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        // 使用本地日期字符串 YYYY-MM-DD
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        dates.push(year + '-' + month + '-' + day);
+      }
+      return dates;
+    }
+
+    function getLocalDateStr(date) {
+      if (!date) return '';
+      const d = new Date(date);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return year + '-' + month + '-' + day;
+    }
+
+    // ========== 菜单 ==========
     const menu = document.getElementById('sideMenu');
     const overlay = document.getElementById('overlay');
 
@@ -327,7 +387,175 @@
     document.querySelectorAll('.squishy-active').forEach(btn => {
       btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
       btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
-      btn.addListener('mouseleave', () => btn.classList.remove('scale-95'));
+      btn.addEventListener('mouseleave', () => btn.classList.remove('scale-95'));
+    });
+
+    // ========== 用户信息更新 ==========
+    function updateUserInfo() {
+      const user = AuthAPI.getUser();
+      if (user) {
+        const nickname = user.nickname || user.username || '用户';
+        const firstChar = nickname.charAt(0).toUpperCase();
+
+        document.getElementById('sidebarName').textContent = nickname;
+        document.getElementById('sidebarAvatar').textContent = firstChar;
+        document.getElementById('headerName').textContent = nickname;
+        document.getElementById('headerAvatar').textContent = firstChar;
+        document.getElementById('mobileAvatar').textContent = firstChar;
+      }
+    }
+
+    async function handleLogout() {
+      await AuthAPI.logout();
+      window.location.href = '../auth/login.html';
+    }
+
+    // ========== 仪表盘数据加载 ==========
+    async function initDashboard() {
+      if (!AuthAPI.isLoggedIn()) {
+        window.location.href = '../auth/login.html';
+        return;
+      }
+
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth() + 1;
+
+      try {
+        // 并行加载所有数据
+        const [summaryData, todayData, categoryData, recordsData] = await Promise.allSettled([
+          StatisticsAPI.getSummary(year, month),
+          StatisticsAPI.getToday(),
+          StatisticsAPI.getCategoryBreakdown(year, month, 1),
+          RecordsAPI.getRecords({ limit: 50 })
+        ]);
+
+        // 处理月度汇总（支出/收入/结余）
+        if (summaryData.status === 'fulfilled' && summaryData.value.code === 200) {
+          const s = summaryData.value.data;
+          document.getElementById('monthExpense').textContent = formatMoney(s.total_expense);
+          document.getElementById('monthIncome').textContent = formatMoney(s.total_income);
+          const balance = s.total_income - s.total_expense;
+          const balanceEl = document.getElementById('monthBalance');
+          balanceEl.textContent = formatMoney(balance);
+          balanceEl.className = 'text-2xl md:text-3xl font-bold tracking-tight ' + (balance >= 0 ? 'text-income-green' : 'text-error');
+          document.getElementById('expenseCount').textContent = s.expense_count || 0;
+          document.getElementById('incomeCount').textContent = s.income_count || 0;
+        } else {
+          document.getElementById('monthExpense').textContent = '¥ 0.00';
+          document.getElementById('monthIncome').textContent = '¥ 0.00';
+          document.getElementById('monthBalance').textContent = '¥ 0.00';
+        }
+
+        // 处理今日数据
+        if (todayData.status === 'fulfilled' && todayData.value.code === 200) {
+          const t = todayData.value.data;
+          document.getElementById('todayBalance').textContent = formatMoney(t.balance);
+          document.getElementById('todayExpense').textContent = formatMoney(t.expense);
+        } else {
+          document.getElementById('todayBalance').textContent = '¥ 0.00';
+          document.getElementById('todayExpense').textContent = '¥ 0.00';
+        }
+
+        // 处理分类数据
+        if (categoryData.status === 'fulfilled' && categoryData.value.code === 200) {
+          renderCategories(categoryData.value.data.categories || []);
+        } else {
+          renderCategories([]);
+        }
+
+        // 处理最近记录
+        if (recordsData.status === 'fulfilled' && recordsData.value.code === 200) {
+          renderRecentRecords(recordsData.value.data.records || []);
+        } else {
+          renderRecentRecords([]);
+        }
+      } catch (error) {
+        console.error('加载仪表盘数据失败:', error);
+      }
+    }
+
+    // 渲染分类（使用 Material Symbols 图标）
+    function renderCategories(categories) {
+      const container = document.getElementById('categoriesContainer');
+      if (!categories || categories.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-8 text-on-surface-variant">
+            <span class="material-symbols-outlined text-4xl mb-2">receipt_long</span>
+            <p class="text-sm">暂无分类数据</p>
+          </div>
+        `;
+        return;
+      }
+
+      // 取前6个分类
+      const topCategories = categories.slice(0, 6);
+      container.innerHTML = topCategories.map(cat => `
+        <a href="add-record.html" class="bg-white p-3 md:p-6 rounded-xl border border-transparent hover:border-primary-container hover:shadow-md transition-all flex flex-col items-center gap-1 md:gap-3 squishy-active">
+          <span class="material-symbols-outlined text-xl md:text-3xl">${cat.icon || 'category'}</span>
+          <span class="text-xs font-medium text-on-surface">${cat.name}</span>
+          <span class="text-[10px] md:text-xs text-on-surface-variant hidden sm:block">${formatMoneyShort(cat.total)}</span>
+        </a>
+      `).join('');
+    }
+
+    // 渲染最近记录
+    function renderRecentRecords(records) {
+      const container = document.getElementById('recordsContainer');
+      const last7Days = getLast7DaysLocal();
+
+      // 过滤最近7天的记录（使用本地日期比较）
+      const recentRecords = records.filter(r => {
+        const recordDateStr = getLocalDateStr(r.record_date);
+        return recordDateStr && last7Days.includes(recordDateStr);
+      });
+
+      if (!recentRecords || recentRecords.length === 0) {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center py-12 text-on-surface-variant">
+            <span class="material-symbols-outlined text-4xl mb-2">format_list_bulleted</span>
+            <p class="text-sm">最近7天暂无记录</p>
+            <a href="add-record.html" class="mt-2 text-primary text-sm hover:underline">去记一笔</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = recentRecords.map(record => {
+        // 图标使用 Material Symbols（确保使用正确类名）
+        const iconName = record.category_icon || 'receipt';
+        const name = record.remark || record.category_name || '未知';
+        const recordDate = new Date(record.record_date);
+        const dateStr = `${String(recordDate.getMonth() + 1).padStart(2, '0')}-${String(recordDate.getDate()).padStart(2, '0')} ${String(recordDate.getHours()).padStart(2, '0')}:${String(recordDate.getMinutes()).padStart(2, '0')}`;
+        const amount = record.type === 1 ? `-${formatMoney(record.amount)}` : `+${formatMoney(record.amount)}`;
+        const amountClass = record.type === 1 ? 'text-error' : 'text-income-green';
+
+        return `
+          <a href="records.html" class="flex items-center gap-3 md:gap-4 p-4 hover:bg-surface-container-lowest transition-colors">
+            <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-lg md:text-xl">
+              <span class="material-symbols-outlined">${iconName}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-sm md:text-base text-on-surface truncate">${name}</p>
+              <p class="text-xs text-on-surface-variant">${dateStr} · ${record.category_name || '未分类'}</p>
+            </div>
+            <span class="font-bold ${amountClass} text-sm md:text-base">${amount}</span>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // ========== 初始化 ==========
+    window.addEventListener('DOMContentLoaded', function() {
+      if (typeof AuthAPI !== 'undefined') {
+        updateUserInfo();
+        initDashboard();
+      } else {
+        setTimeout(() => {
+          updateUserInfo();
+          initDashboard();
+        }, 100);
+      }
     });
   </script>
 </body>
