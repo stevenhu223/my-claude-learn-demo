@@ -1,0 +1,97 @@
+{
+  "pages": [
+    {
+      "path": "pages/auth/login/index",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/auth/register/index",
+      "style": {
+        "navigationBarTitleText": "注册",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/home/index/index",
+      "style": {
+        "navigationBarTitleText": "首页",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/home/add-record/index",
+      "style": {
+        "navigationBarTitleText": "记账",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/home/records/index",
+      "style": {
+        "navigationBarTitleText": "流水",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/home/statistics/index",
+      "style": {
+        "navigationBarTitleText": "统计",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/home/mine/index",
+      "style": {
+        "navigationBarTitleText": "我的",
+        "navigationStyle": "custom"
+      }
+    }
+  ],
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "财务管家",
+    "navigationBarBackgroundColor": "#FFFFFF",
+    "backgroundColor": "#FFF5F7"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#944652",
+    "borderStyle": "white",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {
+        "pagePath": "pages/home/index/index",
+        "text": "首页",
+        "iconPath": "static/tabbar/home.png",
+        "selectedIconPath": "static/tabbar/home-active.png"
+      },
+      {
+        "pagePath": "pages/home/records/index",
+        "text": "流水",
+        "iconPath": "static/tabbar/records.png",
+        "selectedIconPath": "static/tabbar/records-active.png"
+      },
+      {
+        "pagePath": "pages/home/statistics/index",
+        "text": "统计",
+        "iconPath": "static/tabbar/statistics.png",
+        "selectedIconPath": "static/tabbar/statistics-active.png"
+      },
+      {
+        "pagePath": "pages/home/mine/index",
+        "text": "我的",
+        "iconPath": "static/tabbar/mine.png",
+        "selectedIconPath": "static/tabbar/mine-active.png"
+      }
+    ]
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
+    }
+  }
+}
